@@ -12,9 +12,12 @@ class TestPlant:
         assert(response.status_code == 200)
 
     def test_plants_get_route_returns_list_of_plant_objects(self):
-        '''returns JSON representing Plant objects at "/plants".'''
         with app.app_context():
-            p = Plant(name="Douglas Fir")
+            p = Plant(
+                name="Douglas Fir",
+                image="https://example.com/fir.jpg",
+                price=19.99
+            )
             db.session.add(p)
             db.session.commit()
 
@@ -28,6 +31,7 @@ class TestPlant:
 
             db.session.delete(p)
             db.session.commit()
+
 
     def test_plants_post_route_creates_plant_record_in_db(self):
         '''allows users to create Plant records through the "/plants" POST route.'''

@@ -8,13 +8,13 @@ class TestPlant:
 
     def test_can_instantiate(self):
         '''can be instantiated with a name.'''
-        p = Plant(name="Douglas Fir")
+        p = Plant(name="Douglas Fir", image="https://example.com/fir.jpg", price=19.99)
         assert(p)
     
     def test_can_be_created(self):
         '''can create records that can be committed to the database.'''
         with app.app_context():
-            p = Plant(name="Douglas Fir")
+            p = Plant(name="Douglas Fir", image="https://example.com/fir.jpg", price=19.99)
             db.session.add(p)
             db.session.commit()
             assert(p.id)
@@ -25,17 +25,26 @@ class TestPlant:
     def test_can_be_retrieved(self):
         '''can be used to retrieve records from the database.'''
         with app.app_context():
-            p = Plant.query.all()
-            assert(p)
+            # Add a plant to make sure retrieval works
+            p = Plant(name="Douglas Fir", image="https://example.com/fir.jpg", price=19.99)
+            db.session.add(p)
+            db.session.commit()
+
+            plants = Plant.query.all()
+            assert(plants)
+
+            db.session.delete(p)
+            db.session.commit()
 
     def test_can_be_serialized(self):
         '''can create records with a to_dict() method for serialization.'''
         with app.app_context():
-            p = Plant(name="Douglas Fir")
+            p = Plant(name="Douglas Fir", image="https://example.com/fir.jpg", price=19.99)
             db.session.add(p)
             db.session.commit()
+
             p_dict = Plant.query.filter_by(name="Douglas Fir").first().to_dict()
             assert((type(p_dict) == dict) and (p_dict["name"] == "Douglas Fir"))
-        
+
             db.session.delete(p)
             db.session.commit()
